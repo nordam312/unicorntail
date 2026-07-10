@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="logo.png" alt="UnicornTail Logo" width="220" style="border-radius: 24px;" />
+  <img src="logo.png" alt="UnicornTail Logo" width="500" style="border-radius: 32px;" />
 </p>
 
 <h1 align="center">🦄 UnicornTail</h1>
