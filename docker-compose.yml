@@ -1,0 +1,78 @@
+# ---------------------------------------------------------------------------
+# UnicornTail — local development stack
+# Spins up the ENTIRE ecosystem with one command:
+#   npm run docker:up      (alias for: docker compose up --build)
+#
+# Services:
+#   db       -> PostgreSQL 16 (JSONB-ready page storage)
+#   backend  -> NestJS API   (hot-reload)   http://localhost:3001
+#   frontend -> Next.js app  (hot-reload)   http://localhost:3000
+# ---------------------------------------------------------------------------
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: unicorntail-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - unicorntail_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: .
+      dockerfile: apps/backend/Dockerfile.dev
+    container_name: unicorntail-backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: development
+      PORT: ${BACKEND_PORT:-3001}
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+    ports:
+      - "${BACKEND_PORT:-3001}:${BACKEND_PORT:-3001}"
+    volumes:
+      # Bind-mount source for hot reload...
+      - ./apps/backend:/app/apps/backend
+      # ...but keep container-installed node_modules (named volumes are
+      # seeded from the image, then shadow the host so we don't clobber them).
+      - backend_node_modules:/app/apps/backend/node_modules
+      - root_node_modules:/app/node_modules
+
+  frontend:
+    build:
+      context: .
+      dockerfile: apps/frontend/Dockerfile.dev
+    container_name: unicorntail-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    environment:
+      NODE_ENV: development
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:3001}
+      # Enable file-watch polling so hot reload works on Windows/macOS bind mounts.
+      WATCHPACK_POLLING: "true"
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    volumes:
+      - ./apps/frontend:/app/apps/frontend
+      - frontend_node_modules:/app/apps/frontend/node_modules
+      - root_node_modules:/app/node_modules
+
+volumes:
+  unicorntail_pgdata:
+  root_node_modules:
+  backend_node_modules:
+  frontend_node_modules:

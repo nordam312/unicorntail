@@ -1,0 +1,22 @@
+{
+  "name": "unicorntail",
+  "version": "0.1.0",
+  "private": true,
+  "description": "UnicornTail — a scalable micro-SaaS visual page builder with export-to-Next.js.",
+  "license": "MIT",
+  "workspaces": [
+    "apps/*"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "docker:up": "docker compose up --build",
+    "docker:up:d": "docker compose up --build -d",
+    "docker:down": "docker compose down",
+    "docker:clean": "docker compose down -v",
+    "docker:logs": "docker compose logs -f",
+    "dev:backend": "npm run start:dev -w @unicorntail/backend",
+    "dev:frontend": "npm run dev -w @unicorntail/frontend"
+  }
+}
