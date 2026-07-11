@@ -19,9 +19,13 @@ RUN npm install
 #    but required for a clean `docker build` without mounts).
 COPY apps/backend ./apps/backend
 
+# 4) Generate the Prisma client so the image is runnable standalone.
+#    (At runtime the compose command regenerates it into the bind mount.)
+RUN npx prisma generate --schema=apps/backend/prisma/schema.prisma
+
 WORKDIR /app/apps/backend
 
 EXPOSE 3001
 
-# Hot-reloading dev server.
+# Fallback command; docker-compose overrides this to also run migrations.
 CMD ["npm", "run", "start:dev"]

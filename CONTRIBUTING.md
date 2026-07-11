@@ -69,6 +69,7 @@ take a few minutes — grab a coffee ☕). Once you see the servers start, open:
 | 🖥️  Frontend   | http://localhost:3000        |
 | ⚙️  Backend API | http://localhost:3001        |
 | ❤️  Health check | http://localhost:3001/health |
+| 🩺  DB health   | http://localhost:3001/health/db |
 | 🐘  PostgreSQL | `localhost:5432`             |
 
 **Hot reload is enabled** — edit any file in `apps/frontend` or `apps/backend`
@@ -106,6 +107,32 @@ npm run dev:frontend        # Next.js on :3000
 ```
 
 You can keep the database in Docker with `docker compose up db`.
+
+---
+
+## 🗄️ Database & Migrations (Prisma 7)
+
+The backend uses **Prisma 7** with the PostgreSQL **driver adapter**
+(`@prisma/adapter-pg`) — there is no Rust query-engine binary in the image.
+
+- The schema lives in `apps/backend/prisma/schema.prisma`.
+- The connection URL is configured in `apps/backend/prisma.config.ts`
+  (read from `DATABASE_URL`).
+- Committed migrations are **applied automatically** on container boot
+  (`prisma migrate deploy` runs before the dev server starts).
+
+When you change the schema, create a migration **inside the container** so it
+uses the Dockerized database:
+
+```bash
+# stack must be running (npm run docker:up)
+npm run db:migrate                 # prompts for a migration name
+# or directly:
+docker compose exec backend npx prisma migrate dev --name your_change
+```
+
+> The generated Prisma client (`apps/backend/src/generated/`) is **git-ignored**
+> and regenerated on install/build/boot — never commit it.
 
 ---
 

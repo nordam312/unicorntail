@@ -43,6 +43,9 @@ services:
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
     ports:
       - "${BACKEND_PORT:-3001}:${BACKEND_PORT:-3001}"
+    # Regenerate the Prisma client into the mounted source, apply any pending
+    # migrations, then start the hot-reloading dev server.
+    command: sh -c "npx prisma generate && npx prisma migrate deploy && npm run start:dev"
     volumes:
       # Bind-mount source for hot reload...
       - ./apps/backend:/app/apps/backend

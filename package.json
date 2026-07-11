@@ -16,6 +16,8 @@
     "docker:down": "docker compose down",
     "docker:clean": "docker compose down -v",
     "docker:logs": "docker compose logs -f",
+    "db:migrate": "docker compose exec backend npx prisma migrate dev",
+    "db:studio": "docker compose exec backend npx prisma studio",
     "dev:backend": "npm run start:dev -w @unicorntail/backend",
     "dev:frontend": "npm run dev -w @unicorntail/frontend"
   }

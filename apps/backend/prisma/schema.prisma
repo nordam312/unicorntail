@@ -1,0 +1,69 @@
+// UnicornTail — Prisma schema
+// Docs: https://pris.ly/d/prisma-schema
+
+// Prisma 7 uses the new `prisma-client` generator: code is emitted to an
+// explicit path in the source tree (no more "magic" node_modules output).
+// `moduleFormat = "cjs"` is required so the client works with NestJS (CommonJS).
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "cjs"
+}
+
+// Prisma 7 connects through a driver adapter (@prisma/adapter-pg) at runtime,
+// so there is no Rust query-engine binary to ship in the Docker image.
+// The connection URL now lives in prisma.config.ts (not here).
+datasource db {
+  provider = "postgresql"
+}
+
+/// A platform user. Populated from GitHub OAuth (wired up in a later step).
+model User {
+  id        String   @id @default(cuid())
+  githubId  String?  @unique
+  email     String?  @unique
+  name      String?
+  image     String?
+  sites     Site[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+/// A tenant: one project owned by a user, reachable via a wildcard
+/// subdomain (*.unicorntail.com) or an optional custom domain.
+model Site {
+  id           String   @id @default(cuid())
+  name         String
+  subdomain    String   @unique
+  customDomain String?  @unique
+  owner        User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId      String
+  pages        Page[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([ownerId])
+  @@map("sites")
+}
+
+/// A single page. `content` holds the Craft.js component tree as JSONB —
+/// this is the source of truth for both on-demand rendering and the
+/// export-to-Next.js compiler.
+model Page {
+  id          String    @id @default(cuid())
+  title       String
+  slug        String
+  content     Json      @default("{}") @db.JsonB
+  isPublished Boolean   @default(false)
+  publishedAt DateTime?
+  site        Site      @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  siteId      String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([siteId, slug])
+  @@index([siteId])
+  @@map("pages")
+}
