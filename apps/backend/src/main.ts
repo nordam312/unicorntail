@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { Logger } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -10,6 +10,15 @@ async function bootstrap() {
     origin: true,
     credentials: true,
   });
+
+  // Validate & sanitize all incoming payloads against their DTOs.
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true, // strip properties not in the DTO
+      forbidNonWhitelisted: true, // 400 on unknown properties
+      transform: true, // instantiate DTO classes & coerce types
+    }),
+  );
 
   const port = Number(process.env.PORT) || 3001;
 
