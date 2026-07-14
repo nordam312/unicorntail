@@ -1,0 +1,51 @@
+frontend:
+  - "ui"
+  - "css"
+  - "tailwind"
+  - "component"
+  - "react"
+  - "button"
+  - "zustand"
+
+backend:
+  - "nestjs"
+  - "api"
+  - "database"
+  - "postgresql"
+  - "schema"
+  - "controller"
+  - "dto"
+
+bug:
+  - "error"
+  - "crash"
+  - "broken"
+  - "not working"
+  - "fails"
+
+ui/ux:
+  - "animation"
+  - "framer-motion"
+  - "style"
+  - "theme"
+  - "design"
+  - "colors"
+  - "responsive"
+
+a11y:
+  - "accessibility"
+  - "screen reader"
+  - "keyboard"
+  - "aria"
+  - "contrast"
+
+design-system:
+  - "shared component"
+  - "button variant"
+  - "design tokens"
+  - "input component"
+
+parallel-safe:
+  - "parallel"
+  - "isolated"
+  - "independent feature"
