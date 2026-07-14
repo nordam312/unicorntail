@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Brand } from '@/components/Brand';
 import { NAV_LINKS } from '@/lib/nav';
 
 export function TopNav() {
@@ -6,12 +7,10 @@ export function TopNav() {
     <nav className="w-full top-0 sticky bg-background border-b border-outline-variant z-50">
       <div className="flex justify-between items-center h-16 px-margin-desktop max-w-[1440px] mx-auto">
         <div className="flex items-center gap-8">
-          <Link
-            className="font-headline-md text-headline-md font-bold text-primary tracking-tight"
+          <Brand
             href="/"
-          >
-            UnicornTail
-          </Link>
+            textClassName="font-headline-md text-headline-md font-bold text-primary tracking-tight"
+          />
           <div className="hidden md:flex items-center gap-6">
             {NAV_LINKS.map((label, i) => (
               <a

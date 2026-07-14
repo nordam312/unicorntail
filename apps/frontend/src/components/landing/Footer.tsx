@@ -1,3 +1,4 @@
+import { Brand } from '@/components/Brand';
 import { FOOTER_LINKS } from '@/lib/nav';
 
 export function Footer() {
@@ -5,9 +6,11 @@ export function Footer() {
     <footer className="w-full bg-background border-t border-outline-variant">
       <div className="flex flex-col md:flex-row justify-between items-center py-12 px-margin-desktop max-w-[1440px] mx-auto">
         <div className="flex flex-col items-center md:items-start mb-8 md:mb-0">
-          <span className="font-headline-md text-primary font-bold mb-2">
-            UnicornTail
-          </span>
+          <Brand
+            href={null}
+            textClassName="font-headline-md text-primary font-bold"
+            className="mb-2"
+          />
           <p className="text-on-surface-variant text-label-sm">
             © 2026 UnicornTail Inc. Built for developers.
           </p>

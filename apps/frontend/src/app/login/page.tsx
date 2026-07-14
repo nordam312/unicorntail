@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { Icon } from '@/components/Icon';
+import { Brand } from '@/components/Brand';
 import { AuthCard } from '@/components/login/AuthCard';
 import { NAV_LINKS, FOOTER_LINKS } from '@/lib/nav';
 
@@ -14,16 +14,10 @@ export default function LoginPage() {
       {/* Header */}
       <header className="w-full top-0 sticky bg-background border-b border-outline-variant z-50">
         <div className="flex justify-between items-center h-16 px-margin-desktop max-w-container-max mx-auto">
-          <Link href="/" className="flex items-center gap-2">
-            <Icon
-              name="magic_button"
-              filled
-              className="text-primary-fixed-dim"
-            />
-            <span className="font-headline-md text-headline-md font-bold text-on-surface tracking-tight">
-              UnicornTail
-            </span>
-          </Link>
+          <Brand
+            href="/"
+            textClassName="font-headline-md text-headline-md font-bold text-on-surface tracking-tight"
+          />
           <nav className="hidden md:flex gap-8 items-center">
             {NAV_LINKS.map((label) => (
               <a
@@ -69,11 +63,10 @@ export default function LoginPage() {
       {/* Footer */}
       <footer className="w-full bg-background border-t border-outline-variant">
         <div className="flex flex-col md:flex-row justify-between items-center py-8 px-margin-desktop max-w-container-max mx-auto gap-4">
-          <div className="flex items-center gap-2">
-            <span className="font-headline-md text-headline-md text-on-surface font-bold tracking-tight">
-              UnicornTail
-            </span>
-          </div>
+          <Brand
+            href={null}
+            textClassName="font-headline-md text-headline-md text-on-surface font-bold tracking-tight"
+          />
           <p className="text-sm text-on-surface-variant text-center md:text-left">
             © 2026 UnicornTail Inc. Built for developers.
           </p>

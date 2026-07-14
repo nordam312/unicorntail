@@ -1,6 +1,6 @@
-import Link from 'next/link';
 import { Icon } from '@/components/Icon';
 import { GithubIcon } from '@/components/GithubIcon';
+import { Brand } from '@/components/Brand';
 
 const WORKSPACE_TABS = [
   { label: 'Drafts', active: true },
@@ -12,12 +12,11 @@ export function TopBar() {
   return (
     <header className="fixed top-0 left-0 w-full h-14 z-50 flex items-center justify-between px-6 bg-surface-container-lowest border-b border-outline-variant">
       <div className="flex items-center gap-8">
-        <Link
+        <Brand
           href="/"
-          className="font-headline-md text-headline-md font-bold text-primary-fixed-dim tracking-tighter flex items-center gap-2"
-        >
-          <span>🦄 UnicornTail</span>
-        </Link>
+          size={24}
+          textClassName="font-headline-md text-headline-md font-bold text-primary-fixed-dim tracking-tighter"
+        />
         <div className="flex items-center gap-4 font-label-md">
           <nav className="flex items-center gap-6">
             {WORKSPACE_TABS.map((tab) => (
