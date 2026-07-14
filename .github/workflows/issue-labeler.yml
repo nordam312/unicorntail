@@ -7,9 +7,12 @@ on:
 jobs:
   label-issue:
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: read
     steps:
-      - name: Market and Label Issues
-        uses: github/issue-labeler@v3
+      - name: Label Issues
+        uses: andymckay/labeler-action@v1.2.1
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           configuration-path: .github/labeler-config.yml
