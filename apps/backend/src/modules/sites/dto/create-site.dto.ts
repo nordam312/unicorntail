@@ -5,6 +5,7 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
+import { IsNotReservedSubdomain } from '../validators/is-not-reserved-subdomain.validator';
 
 export class CreateSiteDto {
   @IsString()
@@ -18,6 +19,7 @@ export class CreateSiteDto {
     message:
       'subdomain must be lowercase alphanumeric, may contain hyphens, and cannot start/end with a hyphen',
   })
+  @IsNotReservedSubdomain()
   subdomain: string;
 
   @IsOptional()
