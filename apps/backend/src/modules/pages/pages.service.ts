@@ -66,18 +66,22 @@ export class PagesService {
     return this.setPublished(id, false);
   }
 
-  // Public resolver for the Next.js renderer: subdomain + slug -> published page.
-  async findPublished(subdomain: string, slug: string) {
-    const site = await this.prisma.site.findUnique({ where: { subdomain } });
+  // Public resolver for the Next.js renderer. `host` is the tenant identifier
+  // resolved by the frontend middleware: a wildcard subdomain label
+  // (e.g. "acme") or a full custom domain (e.g. "acme.com"). We match either.
+  async findPublished(host: string, slug: string) {
+    const site = await this.prisma.site.findFirst({
+      where: { OR: [{ subdomain: host }, { customDomain: host }] },
+    });
     if (!site) {
-      throw new NotFoundException(`Site "${subdomain}" not found`);
+      throw new NotFoundException(`Site "${host}" not found`);
     }
     const page = await this.prisma.page.findFirst({
       where: { siteId: site.id, slug, isPublished: true },
     });
     if (!page) {
       throw new NotFoundException(
-        `Published page "${slug}" not found for "${subdomain}"`,
+        `Published page "${slug}" not found for "${host}"`,
       );
     }
     return page;

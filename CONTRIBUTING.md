@@ -33,6 +33,35 @@ unicorntail/
 
 ---
 
+## 📐 Code Standards (read before coding)
+
+To keep the bundle lean and the UI consistent, our stack is **locked**. Full
+details live in the pinned **"Architecture & Standards Guide"** issue; the
+essentials:
+
+- **Client state:** **Zustand** only — not React Context or Redux for dynamic
+  workspace UI.
+- **UI primitives:** **Radix UI** (`@radix-ui/*`) for accessible modals,
+  dropdowns, popovers.
+- **Animation:** **Framer Motion** (`framer-motion`).
+- **Variant styling:** **class-variance-authority**.
+- **Icons:** **Material Symbols only**, via the `<Icon>` wrapper in
+  `apps/frontend/src/components/Icon.tsx`. Do **not** install `lucide-react` or
+  any other icon library. Size icons with the numeric `size` prop or a `text-*`
+  class (they are an icon *font*, so `w-/h-` won't resize them):
+
+  ```tsx
+  import { Icon } from '@/components/Icon';
+
+  <Icon name="bolt" size={20} className="text-primary-fixed-dim" />
+  ```
+
+> ⚠️ **Before adding any dependency**, run `npm view <package> version` and
+> confirm Next.js 15 (App Router) compatibility, or check with a maintainer.
+> Unapproved packages will be requested for removal in review.
+
+---
+
 ## ✅ Prerequisites
 
 You only need **two** things installed:
