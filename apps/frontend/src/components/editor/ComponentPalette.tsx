@@ -1,10 +1,30 @@
-import { Icon } from '@/components/Icon';
+'use client';
 
-// Accent controls the hover border + icon colour per component group.
+// Left palette. Each tile is a Craft.js drag source (`connectors.create`): drag
+// it onto the canvas to insert a real node. Canvas-type components (Section,
+// Grid) are created as droppable <Element canvas>; leaves are inserted directly.
+
+import type { ReactElement } from 'react';
+import { Element, useEditor } from '@craftjs/core';
+import { Icon } from '@/components/Icon';
+import {
+  Button,
+  Grid,
+  Heading,
+  Image,
+  Section,
+  Text,
+} from '@/lib/editor/user-components';
+
 type Accent = 'primary' | 'secondary';
 
-type PaletteItem = { icon: string; label: string };
-type PaletteGroup = { title: string; icon: string; accent: Accent; items: PaletteItem[] };
+type PaletteItem = { icon: string; label: string; create: ReactElement };
+type PaletteGroup = {
+  title: string;
+  icon: string;
+  accent: Accent;
+  items: PaletteItem[];
+};
 
 const ACCENT_BORDER: Record<Accent, string> = {
   primary: 'hover:border-primary-fixed-dim',
@@ -21,8 +41,9 @@ const GROUPS: PaletteGroup[] = [
     icon: 'title',
     accent: 'primary',
     items: [
-      { icon: 'text_fields', label: 'Heading' },
-      { icon: 'subject', label: 'Text' },
+      { icon: 'text_fields', label: 'Heading', create: <Element is={Heading} /> },
+      { icon: 'subject', label: 'Text', create: <Element is={Text} /> },
+      { icon: 'smart_button', label: 'Button', create: <Element is={Button} /> },
     ],
   },
   {
@@ -30,22 +51,25 @@ const GROUPS: PaletteGroup[] = [
     icon: 'grid_view',
     accent: 'secondary',
     items: [
-      { icon: 'view_quilt', label: 'Section' },
-      { icon: 'apps', label: 'Grid' },
+      {
+        icon: 'view_quilt',
+        label: 'Section',
+        create: <Element canvas is={Section} />,
+      },
+      { icon: 'apps', label: 'Grid', create: <Element canvas is={Grid} /> },
     ],
   },
   {
     title: 'Media',
     icon: 'perm_media',
     accent: 'primary',
-    items: [
-      { icon: 'image', label: 'Image' },
-      { icon: 'videocam', label: 'Video' },
-    ],
+    items: [{ icon: 'image', label: 'Image', create: <Element is={Image} /> }],
   },
 ];
 
 export function ComponentPalette() {
+  const { connectors } = useEditor();
+
   return (
     <aside className="fixed left-0 top-14 bottom-0 w-64 z-40 flex flex-col bg-surface-container-low border-r border-outline-variant">
       <div className="p-4 border-b border-outline-variant">
@@ -67,6 +91,9 @@ export function ComponentPalette() {
               {group.items.map((item) => (
                 <div
                   key={item.label}
+                  ref={(ref) => {
+                    if (ref) connectors.create(ref, item.create);
+                  }}
                   className={`p-3 bg-surface-container border border-outline-variant rounded cursor-grab active:scale-95 transition-all group ${ACCENT_BORDER[group.accent]}`}
                 >
                   <div className="h-6 w-full bg-surface-container-high rounded flex items-center justify-center mb-1">
