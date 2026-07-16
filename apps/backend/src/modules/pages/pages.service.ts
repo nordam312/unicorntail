@@ -37,7 +37,12 @@ export class PagesService {
   }
 
   async findOne(id: string) {
-    const page = await this.prisma.page.findUnique({ where: { id } });
+    // Include the parent site so the editor can build the public preview URL
+    // (subdomain / custom domain + slug) without a second request.
+    const page = await this.prisma.page.findUnique({
+      where: { id },
+      include: { site: true },
+    });
     if (!page) {
       throw new NotFoundException(`Page "${id}" not found`);
     }
